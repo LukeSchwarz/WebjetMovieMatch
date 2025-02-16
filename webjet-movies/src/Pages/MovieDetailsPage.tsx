@@ -1,9 +1,8 @@
-import { Card, CardContent, Typography, Grid, CardMedia, Divider, Container, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Card, CardContent, Typography, Box, CardMedia, Divider, Container, CircularProgress } from '@mui/material';
 import { MovieDetails } from '../movie';
 import { getMovieDetailsById } from '../api';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'; // Import useNavigate for back button navigation
-
 
 const MovieDetailsPage = () => {
   const [movie, setMovie] = useState<MovieDetails | null>(null);
@@ -34,16 +33,21 @@ const MovieDetailsPage = () => {
 
   return (
     <Container sx={{ py: 4 }}>
-      <Typography variant="h5" sx={{ mb: 2 }}>
-        Movie Details
-      </Typography>
       {loading ? (
         <Typography variant="h6" align="center">
-          Loading movies...
+          <CircularProgress />
         </Typography>
       ) : movie ? (
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={12} sm={4}>
+        <Box display="flex" justifyContent="center" flexDirection={{ xs: 'column', sm: 'row' }} alignItems="center">
+          {/* Movie Poster Section */}
+          <Box
+            sx={{
+              maxWidth: 400,
+              mb: { xs: 3, sm: 0 },
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
             <Card>
               <CardMedia
                 component="img"
@@ -52,15 +56,23 @@ const MovieDetailsPage = () => {
                 alt={`Poster of ${movie?.title}`}
               />
             </Card>
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} sm={7}>
+          {/* Movie Information Section */}
+          <Box sx={{ maxWidth: 600 }}>
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="h4" gutterBottom>
                   {movie?.title} ({movie?.year})
                 </Typography>
                 <Divider sx={{ my: 2 }} />
+                {/* Main Price */}
+                {movie?.price && (
+                  <Typography variant="h6" gutterBottom color="primary">
+                    <strong>Price:</strong> {movie?.price}
+                  </Typography>
+                )}
+                {/* Other Movie Details */}
                 {movie?.type && (
                   <Typography variant="body1" gutterBottom>
                     <strong>Type:</strong> {movie?.type}
@@ -74,11 +86,6 @@ const MovieDetailsPage = () => {
                 {movie?.rated && (
                   <Typography variant="body1" gutterBottom>
                     <strong>Rated:</strong> {movie?.rated}
-                  </Typography>
-                )}
-                {movie?.released && (
-                  <Typography variant="body1" gutterBottom>
-                    <strong>Released:</strong> {movie?.released}
                   </Typography>
                 )}
                 {movie?.runtime && (
@@ -141,15 +148,10 @@ const MovieDetailsPage = () => {
                     <strong>Votes:</strong> {movie?.votes}
                   </Typography>
                 )}
-                {movie?.price && (
-                  <Typography variant="body1" gutterBottom>
-                    <strong>Price:</strong> {movie?.price}
-                  </Typography>
-                )}
               </CardContent>
             </Card>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       ) : (
         <Typography variant="h6" align="center">
           Movie details not available.

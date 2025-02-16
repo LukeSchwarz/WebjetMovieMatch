@@ -1,6 +1,5 @@
-﻿using WebJetMoviesApi.WebJet;
-using Microsoft.Extensions.Http.Resilience;
-using Polly;
+﻿using Polly;
+using WebJetMoviesApi.WebJet;
 
 var builder = WebApplication.CreateBuilder(args);
 

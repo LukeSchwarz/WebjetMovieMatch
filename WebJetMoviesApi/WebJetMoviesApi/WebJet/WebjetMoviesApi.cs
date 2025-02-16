@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Polly.Registry;
 using System.ComponentModel.DataAnnotations;
 using WebJetMoviesApi.WebJet.Models;
 
@@ -17,12 +16,13 @@ namespace WebJetMoviesApi.WebJet
 		private readonly HttpClient _client;
 		private readonly WebjetApiOptions _options;
 
+		// TODO: Add caching for the movies? (IMemory Cache / Redis).
+
 		public WebjetMoviesApi(IOptions<WebjetApiOptions> options, HttpClient client)
 		{
 			_client = client;
 			_options = options.Value;
 
-			// Set the base address for the HttpClient, this way the GetAsync method will use the base address as the base URL.
 			_client.BaseAddress = new Uri(_options.BaseUrl);
 
 			_client.DefaultRequestHeaders.Add("x-access-token", _options.Apikey);
@@ -59,6 +59,7 @@ namespace WebJetMoviesApi.WebJet
 		{
 			try
 			{
+				// API call has resilience built in from the pipeline.
 				var response = await _client.GetAsync($"/api/{provider.ToString().ToLower()}/movie/{id}");
 
 				if (!response.IsSuccessStatusCode)
@@ -66,7 +67,6 @@ namespace WebJetMoviesApi.WebJet
 
 				var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-				// Deserialize the response using the wrapper class.
 				var movieDetailsResponse = JsonConvert.DeserializeObject<DetailedMovieModel>(json);
 
 				// If the deserialization is successful, return the Movies list, otherwise return an empty list.

@@ -1,9 +1,8 @@
-import { AppBar, Toolbar, Typography, Container, Button, ThemeProvider, createTheme, CssBaseline, Box } from "@mui/material";
+import { Typography, Container, ThemeProvider, createTheme, CssBaseline, CircularProgress } from "@mui/material";
 import { Movie } from "../movie";
 import { useEffect, useState } from "react";
 import { getMovies } from "../api";
 import MovieCardScrollList from "../Components/Card List/MovieCardScrollList";
-import { Link } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -58,9 +57,7 @@ const HomePage = () => {
       {/* Scrollable Movie List */}
       <Container sx={{ py: 4 }}>
         {loading ? (
-          <Typography variant="h6" align="center">
-            Loading movies...
-          </Typography>
+            <CircularProgress />
         ) : 
         (
         <div>

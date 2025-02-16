@@ -2,7 +2,6 @@ import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import { Movie } from "../../movie";
 import { useState } from "react";
 
-// Default PNG Image Path
 import defaultPoster from '../../assets/DefaultPoster.png'
 import { Link } from "react-router-dom";
 
