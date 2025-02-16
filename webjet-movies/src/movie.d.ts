@@ -1,3 +1,14 @@
+interface GetMoviesResponse
+{
+    data: Movie[];
+}
+
+export interface ProviderMovieMap {
+    title: string;
+    cinemaworldMovie: Movie | null;
+    filmworldMovie: Movie | null;
+}
+
 export interface Movie {
     title: string;
     year: string;

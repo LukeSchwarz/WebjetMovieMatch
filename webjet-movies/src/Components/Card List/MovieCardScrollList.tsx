@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
-import { Movie } from "../../movie";
+import { ProviderMovieMap } from "../../movie";
 import MovieCard from "../Card/MovieCard";
 
 interface Props {
-    movies: Movie[];
+    movies: ProviderMovieMap[];
 };
 
 const MovieCardScrollList = (props: Props) => {
@@ -11,7 +11,7 @@ const MovieCardScrollList = (props: Props) => {
     return(
         <Box sx={{ display: "flex", overflowX: "auto", gap: 2, p: 1, scrollbarWidth: "thin", "&::-webkit-scrollbar": { height: 8 } }}>
             {props.movies && props.movies.length > 0 && props.movies.map((movie) =>
-                <MovieCard movie={movie}></MovieCard>
+                <MovieCard providerMovie={movie}></MovieCard>
             )}
         </Box>
     )

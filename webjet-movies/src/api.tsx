@@ -1,10 +1,5 @@
 import axios from "axios";
-import { Movie } from "./movie";
-
-interface GetMoviesResponse
-{
-    data: Movie[];
-}
+import { GetMoviesResponse } from "./movie";
 
 export const getMovies = async (provider: string) =>
 {

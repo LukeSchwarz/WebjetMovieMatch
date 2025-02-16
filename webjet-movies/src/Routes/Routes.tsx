@@ -9,7 +9,7 @@ export const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: "", element: <HomePage /> },
-            { path: "movieDetailsPage/:provider/:movieId", element: <MovieDetailsPage /> },
+            { path: "movieDetailsPage/:cinemaworldMovieId/:filmworldMovieId", element: <MovieDetailsPage /> },
         ] 
     }
 ])

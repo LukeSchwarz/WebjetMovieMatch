@@ -2,23 +2,25 @@ import { Card, CardContent, Typography, Box, CardMedia, Divider, Container, Circ
 import { MovieDetails } from '../movie';
 import { getMovieDetailsById } from '../api';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // Import useNavigate for back button navigation
+import { useParams } from 'react-router-dom'; // Import useNavigate for back button navigation
 
 const MovieDetailsPage = () => {
   const [cinemaWorldMovie, setCinemaWorldMovie] = useState<MovieDetails | null>(null);
   const [filmWorldMovie, setFilmWorldMovie] = useState<MovieDetails | null>(null);
 
-  const [loadingCount, setLoadingCount] = useState(2); // Start with 2 (for both cinemaworld/filmworld API calls)
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [lowestPriceMovie, setLowestPriceMovie] = useState<MovieDetails | null>(null);
+  const [lowestPriceProvider, setLowestPriceProvider] = useState<string>("");
 
-  const { movieId } = useParams<{ movieId: string }>(); // Extract provider and id from URL
+  const [loadingCount, setLoadingCount] = useState(2); // Start with 2 (for both cinemaworld/filmworld API calls)
+  // const navigate = useNavigate(); // Initialize useNavigate
+
+  const { filmworldMovieId, cinemaworldMovieId } = useParams<{ cinemaworldMovieId: string, filmworldMovieId: string }>(); // Extract provider and id from URL
 
   useEffect(() => {
     const fetchCinemaworldMovies = async () => {
       try {
-        const movieDetails = await getMovieDetailsById("cinemaworld", movieId);
+        const movieDetails = await getMovieDetailsById("cinemaworld", cinemaworldMovieId);
         setCinemaWorldMovie(movieDetails?.data as any);
-        console.log("cinemaworld price: $", cinemaWorldMovie?.price);
       } catch (error) {
         console.error('Failed to fetch movies', error); // TODO: Have an error card pop onto website.
       }
@@ -26,9 +28,8 @@ const MovieDetailsPage = () => {
 
     const fetchFilmworldMovies = async () => {
       try {
-        const movieDetails = await getMovieDetailsById("filmworld", movieId);
+        const movieDetails = await getMovieDetailsById("filmworld", filmworldMovieId);
         setFilmWorldMovie(movieDetails?.data as any);
-        console.log("filmworld price: $", filmWorldMovie?.price);
       } catch (error) {
         console.error('Failed to fetch movies', error);
       }
@@ -36,32 +37,54 @@ const MovieDetailsPage = () => {
 
     fetchCinemaworldMovies().then(() => {
       setLoadingCount((prev) => prev - 1);
+
+      let movie = cinemaWorldMovie;  
+      let provider = "Cinemaworld Movies";
+      if (!movie)
+      {
+        movie = filmWorldMovie;
+        if (movie)
+          provider = "Filmworld Movies";
+      }
+      else if (filmWorldMovie)
+      {
+        if (!movie || parseFloat(movie.price) > parseFloat(filmWorldMovie.price))
+        {
+          movie = filmWorldMovie;
+          provider = "Filmworld Movies";
+        }
+      }
+      setLowestPriceMovie(movie);
+      setLowestPriceProvider(provider);
     });
 
     fetchFilmworldMovies().then(() => {
       setLoadingCount((prev) => prev - 1);
-    });
-  }, [movieId]);
 
-  var lowestPriceMovie = undefined;
-  var lowestPricedProvider = "";
-  if (cinemaWorldMovie)
-  {
-    lowestPriceMovie = cinemaWorldMovie;
-    lowestPricedProvider = "Cinema World";
-  }
-  
-  if (filmWorldMovie)
-  {
-    if (!lowestPriceMovie || parseFloat(lowestPriceMovie.price) > parseFloat(filmWorldMovie.price))
-    {
-      lowestPriceMovie = filmWorldMovie;
-      lowestPricedProvider = "Cinema World";
-    }
-  }
+      let movie = cinemaWorldMovie;  
+      let provider = "Cinemaworld Movies";
+      if (!movie)
+      {
+        movie = filmWorldMovie;
+        if (movie)
+          provider = "Filmworld Movies";
+      }
+      else if (filmWorldMovie)
+      {
+        if (!movie || parseFloat(movie.price) > parseFloat(filmWorldMovie.price))
+        {
+          movie = filmWorldMovie;
+          provider = "Filmworld Movies";
+        }
+      }
+      setLowestPriceMovie(movie);
+      setLowestPriceProvider(provider);
+    });
+  }, []);
   
   console.log("cinemaworld price: $", cinemaWorldMovie?.price);
   console.log("filmworld price: $", filmWorldMovie?.price);
+
   return (
     <Container sx={{ py: 4 }}>
       {loadingCount > 0 ? (
@@ -91,7 +114,7 @@ const MovieDetailsPage = () => {
                 Lowest Price ${lowestPriceMovie?.price}
               </Typography>
               <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "goldenrod" }}>
-                From {lowestPricedProvider}
+                From {lowestPriceProvider}
               </Typography>
             </CardContent>
             </Card>
