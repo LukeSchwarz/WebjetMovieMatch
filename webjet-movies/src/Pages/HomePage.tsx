@@ -20,52 +20,58 @@ const HomePage = () => {
   const [cinemaworldMovies, setCinemaworldMovies] = useState<Movie[]>([]);
   const [filmworldMovies, setFilmworldMovies] = useState<Movie[]>([]);
 
-  const [loading, setLoading] = useState(true);
+  const [cinemaworldLoading, setCinemaworldLoading] = useState(true);
+  const [filmworldLoading, setFilmworldLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchCinemaworldMovies = async () => {
         try {
             const cinemaWorldMovies = await getMovies("cinemaworld");
             setCinemaworldMovies(cinemaWorldMovies?.data as any);
-
-            const filmworldMovies = await getMovies("filmworld");
-            setFilmworldMovies(filmworldMovies?.data as any);
         } catch (error)
         {
             console.error("Failed to fetch movies", error); // TODO: Have an error card pop onto website.
         }
     }
 
-    fetchMovies().then(() => {
-        setLoading(false);
-    });
-  }, [])
+    const fetchFilmworldMovies = async () => {
+      try {
+          const filmworldMovies = await getMovies("filmworld");
+          setFilmworldMovies(filmworldMovies?.data as any);
+      } catch (error)
+      {
+          console.error("Failed to fetch movies", error); // TODO: Have an error card pop onto website.
+      }
+    }
 
-  console.log("Cinema World: ", cinemaworldMovies);
-  console.log("Film World: ", filmworldMovies);
+      fetchCinemaworldMovies().then(() => {
+          setCinemaworldLoading(false);
+          console.log(cinemaworldLoading);
+      });
+
+      fetchFilmworldMovies().then(() => {
+        setFilmworldLoading(false);
+        console.log(filmworldMovies);
+      });
+    }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-
-      {/* Hero Section */}
-      <Container sx={{ textAlign: "center", py: 8 }}>
-        <Typography variant="h2" gutterBottom>
-          Find Movies At The Best Prices!
-        </Typography>
-      </Container>
-
-      {/* Scrollable Movie List */}
       <Container sx={{ py: 4 }}>
-        {loading ? (
-            <CircularProgress />
-        ) : 
-        (
-        <div>
-            <MovieCardScrollList movies={cinemaworldMovies}></MovieCardScrollList>
-            <MovieCardScrollList movies={filmworldMovies}></MovieCardScrollList>
-        </div>
-        )}
+        <Container sx={{ textAlign: "center", py: 4 }}>
+          <Typography variant="h2" gutterBottom>
+            Cinema World Movies
+          </Typography>
+          {cinemaworldLoading ? <CircularProgress /> : <MovieCardScrollList movies={cinemaworldMovies} />}
+        </Container>
 
+        <Container sx={{ textAlign: "center", py: 4 }}>
+          <Typography variant="h2" gutterBottom>
+            Film World Movies
+          </Typography>
+          {filmworldLoading ? <CircularProgress /> : <MovieCardScrollList movies={filmworldMovies} />}
+        </Container>
       </Container>
     </ThemeProvider>
   );

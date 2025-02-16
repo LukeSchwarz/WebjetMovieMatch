@@ -24,11 +24,11 @@ builder.Services.AddHttpClient<WebjetMoviesApi>().AddStandardResilienceHandler()
 builder.Services.AddResiliencePipeline("default", x => {
 	x.AddRetry(new Polly.Retry.RetryStrategyOptions()
 	{
-		ShouldHandle = new PredicateBuilder().Handle<Exception>(), // TODO DO THE PROHIBITED EXCEPTION
+		ShouldHandle = new PredicateBuilder().Handle<Exception>(), // TODO: Do the prohibited exception.
 		Delay = TimeSpan.FromSeconds(3),
 		MaxRetryAttempts = 2,
 		BackoffType = DelayBackoffType.Exponential,
-		UseJitter = true, // Add some randomness to the delay to prevent all clients from retrying at the same time. (We only have one client though \(00)/).
+		UseJitter = true, // Add some randomness.
 	})
 	.AddTimeout(TimeSpan.FromSeconds(30));
 });

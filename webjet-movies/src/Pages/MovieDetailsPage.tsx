@@ -28,9 +28,6 @@ const MovieDetailsPage = () => {
     });
   }, [provider, movieId]);
 
-  console.log("Provider: ", provider);
-  console.log("Id: ", movieId);
-
   return (
     <Container sx={{ py: 4 }}>
       {loading ? (
@@ -55,6 +52,11 @@ const MovieDetailsPage = () => {
                 image={movie?.poster || ''}
                 alt={`Poster of ${movie?.title}`}
               />
+            <CardContent>
+              <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "goldenrod" }}>
+                Price ${movie?.price}
+              </Typography>
+            </CardContent>
             </Card>
           </Box>
 

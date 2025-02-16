@@ -20,7 +20,6 @@ const MovieCard = (props: Props) => {
           component="img"
           height="300"
           image={imagePoster}
-          alt={props.movie.title}
           onError={e => {
             console.log("Set movie default poster for: ", props.movie.title)
             console.log("Error: ", e)
@@ -29,9 +28,9 @@ const MovieCard = (props: Props) => {
         />
       </Link>
       <CardContent>
-        <Typography variant="h6">{props.movie.year}</Typography>
+        <Typography variant="h6">{props.movie.title}</Typography>
         <Typography variant="body2" color="text.secondary">
-          {props.movie.type}
+          {props.movie.year}
         </Typography>
       </CardContent>
     </Card>
