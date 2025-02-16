@@ -22,7 +22,6 @@ const MovieCard = (props: Props) => {
           height="300"
           image={imagePoster}
           onError={e => {
-            console.log("Set movie default poster for: ", props.movie.title)
             console.log("Error: ", e)
             setImagePoster(defaultPoster);
           }} // Call handleError if the image fails to load

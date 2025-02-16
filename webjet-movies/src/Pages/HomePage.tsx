@@ -63,14 +63,14 @@ const HomePage = () => {
           <Typography variant="h2" gutterBottom>
             Cinema World Movies
           </Typography>
-          {cinemaworldLoading ? <CircularProgress /> : <MovieCardScrollList provider="cinemaworld" movies={cinemaworldMovies} />}
+          {cinemaworldLoading ? <CircularProgress /> : <MovieCardScrollList key={"cinemaworldList"} provider="cinemaworld" movies={cinemaworldMovies} />}
         </Container>
 
         <Container sx={{ textAlign: "center", py: 4 }}>
           <Typography variant="h2" gutterBottom>
             Film World Movies
           </Typography>
-          {filmworldLoading ? <CircularProgress /> : <MovieCardScrollList provider="filmworld" movies={filmworldMovies} />}
+          {filmworldLoading ? <CircularProgress /> : <MovieCardScrollList key={"filmworldList"} provider="filmworld" movies={filmworldMovies} />}
         </Container>
       </Container>
     </ThemeProvider>

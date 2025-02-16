@@ -2,20 +2,18 @@ import { Card, CardContent, Typography, Box, CardMedia, Divider, Container, Circ
 import { MovieDetails } from '../movie';
 import { getMovieDetailsById } from '../api';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // Import useNavigate for back button navigation
+import { useParams } from 'react-router-dom'; // Import useNavigate for back button navigation
+import defaultPoster from '../assets/DefaultPoster.png'
 
 const MovieDetailsPage = () => {
   const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate(); // Initialize useNavigate
 
   const { provider, movieId } = useParams<{ provider: string; movieId: string }>(); // Extract provider and id from URL
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        console.log('Try and fetch movie details');
-
         const movieDetails = await getMovieDetailsById(provider, movieId);
         setMovie(movieDetails?.data as any);
       } catch (error) {
@@ -49,8 +47,10 @@ const MovieDetailsPage = () => {
               <CardMedia
                 component="img"
                 height="500"
-                image={movie?.poster || ''}
-                alt={`Poster of ${movie?.title}`}
+                image={movie.poster}
+                onError={e => {
+                  (e.target as HTMLImageElement).src = defaultPoster;
+                }}
               />
             <CardContent>
               <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "goldenrod" }}>

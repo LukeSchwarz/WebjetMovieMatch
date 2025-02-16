@@ -12,7 +12,7 @@ const MovieCardScrollList = (props: Props) => {
     return(
         <Box sx={{ display: "flex", overflowX: "auto", gap: 2, p: 1, scrollbarWidth: "thin", "&::-webkit-scrollbar": { height: 8 } }}>
             {props.movies && props.movies.length > 0 && props.movies.map((movie) =>
-                <MovieCard provider={props.provider} movie={movie}></MovieCard>
+                <MovieCard key={movie.id} provider={props.provider} movie={movie}></MovieCard>
             )}
         </Box>
     )
