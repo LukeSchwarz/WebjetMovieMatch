@@ -6,6 +6,7 @@ import defaultPoster from '../../assets/DefaultPoster.png'
 import { Link } from "react-router-dom";
 
 interface Props {
+    provider: string;
     movie: Movie;
 };
 
@@ -15,7 +16,7 @@ const MovieCard = (props: Props) => {
 
   return (
     <Card sx={{ minWidth: 200, maxWidth: 220, flexShrink: 0 }}>
-      <Link to={`/movieDetailsPage/${"cinemaworld"}/${props.movie.id}`}>
+      <Link to={`/movieDetailsPage/${props.provider}/${props.movie.id}`}>
         <CardMedia
           component="img"
           height="300"
