@@ -6,7 +6,7 @@ import defaultPoster from '../../assets/DefaultPoster.png'
 import { Link } from "react-router-dom";
 
 interface Props {
-    movie: Movie;
+    providerMovies: Movie[];
 };
 
 const MovieCard = (props: Props) => {

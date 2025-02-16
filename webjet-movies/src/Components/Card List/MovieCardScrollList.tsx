@@ -9,7 +9,7 @@ interface Props {
 const MovieCardScrollList = (props: Props) => {
 
     return(
-        <Box key={"MainBox2"} sx={{ display: "flex", overflowX: "auto", gap: 2, p: 1, scrollbarWidth: "thin", "&::-webkit-scrollbar": { height: 8 } }}>
+        <Box sx={{ display: "flex", overflowX: "auto", gap: 2, p: 1, scrollbarWidth: "thin", "&::-webkit-scrollbar": { height: 8 } }}>
             {props.movies && props.movies.length > 0 && props.movies.map((movie) =>
                 <MovieCard movie={movie}></MovieCard>
             )}

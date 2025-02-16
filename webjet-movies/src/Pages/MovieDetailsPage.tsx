@@ -5,36 +5,70 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom'; // Import useNavigate for back button navigation
 
 const MovieDetailsPage = () => {
-  const [movie, setMovie] = useState<MovieDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [cinemaWorldMovie, setCinemaWorldMovie] = useState<MovieDetails | null>(null);
+  const [filmWorldMovie, setFilmWorldMovie] = useState<MovieDetails | null>(null);
+
+  const [loadingCount, setLoadingCount] = useState(2); // Start with 2 (for both cinemaworld/filmworld API calls)
   const navigate = useNavigate(); // Initialize useNavigate
 
-  const { provider, movieId } = useParams<{ provider: string; movieId: string }>(); // Extract provider and id from URL
+  const { movieId } = useParams<{ movieId: string }>(); // Extract provider and id from URL
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchCinemaworldMovies = async () => {
       try {
-        console.log('Try and fetch movie details');
-
-        const movieDetails = await getMovieDetailsById(provider, movieId);
-        setMovie(movieDetails?.data as any);
+        const movieDetails = await getMovieDetailsById("cinemaworld", movieId);
+        setCinemaWorldMovie(movieDetails?.data as any);
+        console.log("cinemaworld price: $", cinemaWorldMovie?.price);
       } catch (error) {
         console.error('Failed to fetch movies', error); // TODO: Have an error card pop onto website.
       }
     };
 
-    fetchMovies().then(() => {
-      setLoading(false);
-    });
-  }, [provider, movieId]);
+    const fetchFilmworldMovies = async () => {
+      try {
+        const movieDetails = await getMovieDetailsById("filmworld", movieId);
+        setFilmWorldMovie(movieDetails?.data as any);
+        console.log("filmworld price: $", filmWorldMovie?.price);
+      } catch (error) {
+        console.error('Failed to fetch movies', error);
+      }
+    };
 
+    fetchCinemaworldMovies().then(() => {
+      setLoadingCount((prev) => prev - 1);
+    });
+
+    fetchFilmworldMovies().then(() => {
+      setLoadingCount((prev) => prev - 1);
+    });
+  }, [movieId]);
+
+  var lowestPriceMovie = undefined;
+  var lowestPricedProvider = "";
+  if (cinemaWorldMovie)
+  {
+    lowestPriceMovie = cinemaWorldMovie;
+    lowestPricedProvider = "Cinema World";
+  }
+  
+  if (filmWorldMovie)
+  {
+    if (!lowestPriceMovie || parseFloat(lowestPriceMovie.price) > parseFloat(filmWorldMovie.price))
+    {
+      lowestPriceMovie = filmWorldMovie;
+      lowestPricedProvider = "Cinema World";
+    }
+  }
+  
+  console.log("cinemaworld price: $", cinemaWorldMovie?.price);
+  console.log("filmworld price: $", filmWorldMovie?.price);
   return (
     <Container sx={{ py: 4 }}>
-      {loading ? (
+      {loadingCount > 0 ? (
         <Typography variant="h6" align="center">
           <CircularProgress />
         </Typography>
-      ) : movie ? (
+      ) : lowestPriceMovie ? (
         <Box display="flex" justifyContent="center" flexDirection={{ xs: 'column', sm: 'row' }} alignItems="center">
           {/* Movie Poster Section */}
           <Box
@@ -49,12 +83,15 @@ const MovieDetailsPage = () => {
               <CardMedia
                 component="img"
                 height="500"
-                image={movie?.poster || ''}
-                alt={`Poster of ${movie?.title}`}
+                image={lowestPriceMovie?.poster || ''}
+                alt={`Poster of ${lowestPriceMovie?.title}`}
               />
             <CardContent>
               <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "goldenrod" }}>
-                Price ${movie?.price}
+                Lowest Price ${lowestPriceMovie?.price}
+              </Typography>
+              <Typography variant="h5" gutterBottom sx={{ fontWeight: "bold", color: "goldenrod" }}>
+                From {lowestPricedProvider}
               </Typography>
             </CardContent>
             </Card>
@@ -65,89 +102,89 @@ const MovieDetailsPage = () => {
             <Card sx={{ height: '100%' }}>
               <CardContent>
                 <Typography variant="h4" gutterBottom>
-                  {movie?.title} ({movie?.year})
+                  {lowestPriceMovie?.title} ({lowestPriceMovie?.year})
                 </Typography>
                 <Divider sx={{ my: 2 }} />
                 {/* Main Price */}
-                {movie?.price && (
+                {lowestPriceMovie?.price && (
                   <Typography variant="h6" gutterBottom color="primary">
-                    <strong>Price:</strong> {movie?.price}
+                    <strong>Price:</strong> {lowestPriceMovie?.price}
                   </Typography>
                 )}
                 {/* Other Movie Details */}
-                {movie?.type && (
+                {lowestPriceMovie?.type && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Type:</strong> {movie?.type}
+                    <strong>Type:</strong> {lowestPriceMovie?.type}
                   </Typography>
                 )}
-                {movie?.release && (
+                {lowestPriceMovie?.release && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Release:</strong> {movie?.release}
+                    <strong>Release:</strong> {lowestPriceMovie?.release}
                   </Typography>
                 )}
-                {movie?.rated && (
+                {lowestPriceMovie?.rated && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Rated:</strong> {movie?.rated}
+                    <strong>Rated:</strong> {lowestPriceMovie?.rated}
                   </Typography>
                 )}
-                {movie?.runtime && (
+                {lowestPriceMovie?.runtime && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Runtime:</strong> {movie?.runtime}
+                    <strong>Runtime:</strong> {lowestPriceMovie?.runtime}
                   </Typography>
                 )}
-                {movie?.genre && (
+                {lowestPriceMovie?.genre && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Genre:</strong> {movie?.genre}
+                    <strong>Genre:</strong> {lowestPriceMovie?.genre}
                   </Typography>
                 )}
-                {movie?.director && (
+                {lowestPriceMovie?.director && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Director:</strong> {movie?.director}
+                    <strong>Director:</strong> {lowestPriceMovie?.director}
                   </Typography>
                 )}
-                {movie?.writer && (
+                {lowestPriceMovie?.writer && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Writer:</strong> {movie?.writer}
+                    <strong>Writer:</strong> {lowestPriceMovie?.writer}
                   </Typography>
                 )}
-                {movie?.actors && (
+                {lowestPriceMovie?.actors && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Actors:</strong> {movie?.actors}
+                    <strong>Actors:</strong> {lowestPriceMovie?.actors}
                   </Typography>
                 )}
-                {movie?.plot && (
+                {lowestPriceMovie?.plot && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Plot:</strong> {movie?.plot}
+                    <strong>Plot:</strong> {lowestPriceMovie?.plot}
                   </Typography>
                 )}
-                {movie?.language && (
+                {lowestPriceMovie?.language && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Language:</strong> {movie?.language}
+                    <strong>Language:</strong> {lowestPriceMovie?.language}
                   </Typography>
                 )}
-                {movie?.country && (
+                {lowestPriceMovie?.country && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Country:</strong> {movie?.country}
+                    <strong>Country:</strong> {lowestPriceMovie?.country}
                   </Typography>
                 )}
-                {movie?.awards && (
+                {lowestPriceMovie?.awards && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Awards:</strong> {movie?.awards}
+                    <strong>Awards:</strong> {lowestPriceMovie?.awards}
                   </Typography>
                 )}
-                {movie?.metascore && (
+                {lowestPriceMovie?.metascore && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Metascore:</strong> {movie?.metascore}
+                    <strong>Metascore:</strong> {lowestPriceMovie?.metascore}
                   </Typography>
                 )}
-                {movie?.rating && (
+                {lowestPriceMovie?.rating && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Rating:</strong> {movie?.rating}
+                    <strong>Rating:</strong> {lowestPriceMovie?.rating}
                   </Typography>
                 )}
-                {movie?.votes && (
+                {lowestPriceMovie?.votes && (
                   <Typography variant="body1" gutterBottom>
-                    <strong>Votes:</strong> {movie?.votes}
+                    <strong>Votes:</strong> {lowestPriceMovie?.votes}
                   </Typography>
                 )}
               </CardContent>

@@ -15,19 +15,28 @@ const theme = createTheme({
   },
 });
 
+const checkImageValid = (url: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = url;
+
+    img.onload = () => resolve(true); // Image loaded successfully.
+    img.onerror = () => resolve(false); // Image failed to load.
+  });
+};
+
 const HomePage = () => {
 
   const [cinemaworldMovies, setCinemaworldMovies] = useState<Movie[]>([]);
   const [filmworldMovies, setFilmworldMovies] = useState<Movie[]>([]);
 
-  const [cinemaworldLoading, setCinemaworldLoading] = useState(true);
-  const [filmworldLoading, setFilmworldLoading] = useState(true);
+  const [loadingCount, setLoadingCount] = useState(2); // Start with 2 (for both cinemaworld/filmworld API calls)
 
   useEffect(() => {
     const fetchCinemaworldMovies = async () => {
         try {
-            const cinemaWorldMovies = await getMovies("cinemaworld");
-            setCinemaworldMovies(cinemaWorldMovies?.data as any);
+            const response = await getMovies("cinemaworld");
+            setCinemaworldMovies(response?.data as any);
         } catch (error)
         {
             console.error("Failed to fetch movies", error); // TODO: Have an error card pop onto website.
@@ -36,8 +45,8 @@ const HomePage = () => {
 
     const fetchFilmworldMovies = async () => {
       try {
-          const filmworldMovies = await getMovies("filmworld");
-          setFilmworldMovies(filmworldMovies?.data as any);
+          const response = await getMovies("cinemaworld");
+          setFilmworldMovies(response?.data as any);
       } catch (error)
       {
           console.error("Failed to fetch movies", error); // TODO: Have an error card pop onto website.
@@ -45,13 +54,11 @@ const HomePage = () => {
     }
 
       fetchCinemaworldMovies().then(() => {
-          setCinemaworldLoading(false);
-          console.log(cinemaworldLoading);
+        setLoadingCount((prev) => prev - 1);
       });
 
       fetchFilmworldMovies().then(() => {
-        setFilmworldLoading(false);
-        console.log(filmworldMovies);
+        setLoadingCount((prev) => prev - 1);
       });
     }, []);
 
@@ -60,17 +67,8 @@ const HomePage = () => {
       <CssBaseline />
       <Container sx={{ py: 4 }}>
         <Container sx={{ textAlign: "center", py: 4 }}>
-          <Typography variant="h2" gutterBottom>
-            Cinema World Movies
-          </Typography>
-          {cinemaworldLoading ? <CircularProgress /> : <MovieCardScrollList movies={cinemaworldMovies} />}
-        </Container>
-
-        <Container sx={{ textAlign: "center", py: 4 }}>
-          <Typography variant="h2" gutterBottom>
-            Film World Movies
-          </Typography>
-          {filmworldLoading ? <CircularProgress /> : <MovieCardScrollList movies={filmworldMovies} />}
+            {loadingCount > 0 && <CircularProgress />}
+            <MovieCardScrollList movies={combineMovieLists(filmworldMovies, cinemaworldMovies)} />
         </Container>
       </Container>
     </ThemeProvider>

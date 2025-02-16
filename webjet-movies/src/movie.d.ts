@@ -28,5 +28,5 @@ export interface MovieDetails {
     metascore?: string;
     rating?: string;
     votes?: string;
-    price?: string;
+    price: string;
 }

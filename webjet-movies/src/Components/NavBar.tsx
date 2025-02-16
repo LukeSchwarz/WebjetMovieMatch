@@ -13,7 +13,6 @@ export default function ButtonAppBar() {
         <Toolbar>
           <Link to="/">
             <IconButton
-              size="Large"
               edge="start"
               color="inherit"
               aria-label="menu"
