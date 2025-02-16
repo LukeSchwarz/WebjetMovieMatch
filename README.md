@@ -33,7 +33,9 @@ Both providers api will drop at random intervals so the API and Web App needs to
 
 - Add resilience to the API calls to allow the backend to retry requesting the data. I used Microsoft.Extensions.HTTP.Resillienceresilience/Polly to add its default resilience pipeline, adding a delayed retry attempt with exponential backoff.
 
-- If I has some more time I would add some memory caching (Redis Maybe) to make the pag eloading a little better when an API was down.
+- Added loading into the Web App for each providers data to show the user the app is still working but waiting for valid data from the API so I have left each providers movies to have a 404 image if the poster has an invalid path.
+
+- If I has some more time I would add some memory caching (Redis Maybe) to make the page loading a little better when an API was down.
 
 **Intentional Bad Data**
 

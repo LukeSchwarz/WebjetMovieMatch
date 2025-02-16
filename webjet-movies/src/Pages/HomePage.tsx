@@ -63,14 +63,24 @@ const HomePage = () => {
           <Typography variant="h2" gutterBottom>
             Cinema World Movies
           </Typography>
-          {cinemaworldLoading ? <CircularProgress /> : <MovieCardScrollList key={"cinemaworldList"} provider="cinemaworld" movies={cinemaworldMovies} />}
+          {cinemaworldLoading
+            ? <CircularProgress />
+            : cinemaworldMovies && cinemaworldMovies.length > 0
+              ? <MovieCardScrollList key={"cinemaworldList"} provider="cinemaworld" movies={cinemaworldMovies} /> 
+              : <Typography variant="h4" gutterBottom> No Movie Data Available </Typography>
+          }
         </Container>
 
         <Container sx={{ textAlign: "center", py: 4 }}>
           <Typography variant="h2" gutterBottom>
             Film World Movies
           </Typography>
-          {filmworldLoading ? <CircularProgress /> : <MovieCardScrollList key={"filmworldList"} provider="filmworld" movies={filmworldMovies} />}
+          {filmworldLoading
+            ? <CircularProgress />
+            : filmworldMovies && filmworldMovies.length > 0
+              ? <MovieCardScrollList key={"filmworldList"} provider="filmworld" movies={filmworldMovies} />
+              : <Typography variant="h4" gutterBottom> No Movie Data Available </Typography>
+          }
         </Container>
       </Container>
     </ThemeProvider>
