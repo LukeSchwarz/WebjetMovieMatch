@@ -31,9 +31,9 @@ Hiding the API token and URL was done for security in local development, and is 
 
 Both providers api will drop at random intervals so the API and Web App needs to be able to handle it without crashing
 
-- Add resilience to the API calls to allow the backend to retry requesting the data. I used Microsoft.Extensions.HTTP.Resillienceresilience/Polly to add its default resilience pipeline, adding a delayed retry attempt with exponential backoff.
+- Add resilience to the API calls to allow the backend to retry requesting the data. I used Microsoft.Extensions.HTTP.Resilience/Polly to add its default resilience pipeline, adding a delayed retry attempt with exponential backoff.
 
-- Added loading into the Web App for each providers data to show the user the app is still working but waiting for valid data from the API so I have left each providers movies to have a 404 image if the poster has an invalid path.
+- Added loading into the Web App for each providers data to show the user the app is still working but waiting for valid data from the API.
 
 - If I has some more time I would add some memory caching (Redis Maybe) to make the page loading a little better when an API was down.
 
@@ -41,7 +41,7 @@ Both providers api will drop at random intervals so the API and Web App needs to
 
 Some of the data will not work, for example, some of the images are not valid paths.
 
-- For the missing image data, I thought it would be out of scope for this task to replace the data instead I added a default 404 image when the link didn’t work.
+- For the missing image data, I thought it would be out of scope for this task to replace the data instead I added a default 404 image when the link doesn't work.
 
   - I debated having a single list of movies made from conjoining the two lists received from both API's and using the data from the one with the valid poster image which may have worked for this task but I felt it is not how I would handle it in a real world example and would instead fix the data comming from the API.
 
